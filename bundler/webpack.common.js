@@ -36,7 +36,7 @@ module.exports = {
 
             // JS
             {
-                test: /\.js$/,
+                test: /\.js$|jsx/,
                 exclude: /node_modules/,
                 use:
                 [
