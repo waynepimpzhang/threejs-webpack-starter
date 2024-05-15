@@ -10,6 +10,37 @@ import Lenis from 'lenis'
 import SplitType from 'split-type'
 
 //preloader
+function startLoader() {
+    let counterElement = document.querySelector('.counter');
+    let currentValue = 0;
+    function updateCounter() {
+        if (currentValue === 100) {
+            return;
+        }
+
+        currentValue += Math.floor(Math.random() * 10) + 1;
+        if (currentValue > 100) {
+            currentValue = 100;
+        }
+        counterElement.textContent = currentValue;
+        let delay = Math.floor(Math.random() * 200) + 50;
+
+        setTimeout(updateCounter, delay);
+    }
+    updateCounter();
+}
+startLoader() 
+gsap.to('.counter',0.25, {
+    delay: 3.5,
+    opacity: 0,
+})
+
+gsap.to('.bar', 1.5, {
+    delay: 3.5,
+    width: 0,
+    stagger: 0.1,
+    ease: 'power4.inOut',
+})
 
 
 //gltf loader
@@ -34,7 +65,7 @@ const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 let star = null
 const axesHelper = new THREE.AxesHelper(5);
-
+let isScroll = false
 const wrapper = document.querySelector('.wrapper')
 // Objects
 loader.load('umbrella.glb', (gltf) => {
@@ -50,14 +81,24 @@ loader.load('umbrella.glb', (gltf) => {
     function handleMediaQueryChange(event) {
         if (event.matches) {
             //mobile        
-            star.position.set(0, -1.4, -1)
-            star.scale.set(.5, .5, .5)
-            star.rotation.x = 0
+            if (isScroll) {
+                star.position.set(0, -0.7, 0)
+                star.scale.set(1.2, 1.2, 1.2)
+            } else {
+                star.position.set(0, -1.4, -1)
+                star.scale.set(.5, .5, .5)
+            }
+
         } else {
             //desktop
-            star.position.set(0, -1.9, -1)
-            star.scale.set(.8, .8, .8)
-            star.rotation.x = 0
+            if (isScroll) {
+                star.position.set(0, -0.7, 0)
+                star.scale.set(1.2, 1.2, 1.2)
+            } else {
+                star.position.set(0, -1.9, -1)
+                star.scale.set(.8, .8, .8)
+            }
+
         }
     }
 
@@ -75,6 +116,7 @@ loader.load('umbrella.glb', (gltf) => {
 
 
     const tl = gsap.timeline({
+
         scrollTrigger: {
             trigger: wrapper,
             start: 'top top',
@@ -82,10 +124,22 @@ loader.load('umbrella.glb', (gltf) => {
             scrub: 2,
             pin: true,
             toggleActions: 'play none none reverse',
+            onEnter: () => {
+
+                isScroll = true
+                console.log(isScroll)
+
+            },
+            onLeaveBack: () => {
+
+                isScroll = false
+                console.log(isScroll)
+
+            },
             // markers: true,
         }
     })
-    tl.to(pointLight.position, { x:2,y: -2,z: 3 })
+    tl.to(pointLight.position, { x: 2, y: -2, z: 3 })
     tl.to(star.position, {
         z: 0,
         y: -.07
@@ -93,11 +147,11 @@ loader.load('umbrella.glb', (gltf) => {
     tl.to(star.rotation, {
         x: 1.5,
     }, '<')
-    tl.to(star.scale,{
-        x:1.2,
-        y:1.2,
-        z:1.2
-    },'<')
+    tl.to(star.scale, {
+        x: 1.2,
+        y: 1.2,
+        z: 1.2
+    }, '<')
 })
 
 //text 
@@ -181,11 +235,11 @@ const tick = () => {
 
     // Update objects
 
-    // pointLight.position.y = baseY + amplitude * Math.sin(frequency * elapsedTime)
+    pointLight.position.y = baseY + amplitude * Math.sin(frequency * elapsedTime)
     // Update Orbital Controls
     // controls.update()
     if (star) {
-        star.rotation.y += 0.005 ;
+        star.rotation.y += 0.005;
     }
     // Render
     renderer.render(scene, camera)

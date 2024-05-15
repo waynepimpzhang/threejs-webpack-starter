@@ -22,6 +22,7 @@
     "raw-loader": "^4.0.2",
     "split-type": "^0.3.4",
     "three": "^0.126.0",
+    "vite": "^5.2.11",
     "webpack": "^5.24.2",
     "webpack-cli": "^4.5.0",
     "webpack-dev-server": "^3.11.2",
