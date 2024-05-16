@@ -107,7 +107,7 @@ p {
 .border {
     position: fixed;
     overflow: hidden;
-    border: 6em solid rgb(255, 255, 255);
+    border: clamp(.8em,10vw,6em) solid rgb(255, 255, 255);
     width: 100vw;
     height: 100vh;
     z-index: 1;

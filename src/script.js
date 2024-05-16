@@ -273,6 +273,10 @@ requestAnimationFrame(raf)
 
 
 //mouse move effect camera position x and y
+//mobile touches effect camera position x and y
+
+
+
 const mouse = { x: 0, y: 0 }
 window.addEventListener('mousemove', (event) => {
     mouse.x = -(event.clientX / window.innerWidth) * 2 + 1
@@ -281,6 +285,15 @@ window.addEventListener('mousemove', (event) => {
     camera.position.y += (mouse.y - camera.position.y) * 0.05
     camera.lookAt(scene.position)
 })  
+window.addEventListener("deviceorientation", handleOrientation, true);
+
+function handleOrientation(event) {
+    if (event.beta !== null && event.gamma !== null) {
+        camera.position.x += (event.beta / 180) * 0.05
+        camera.position.y += (event.gamma / 180) * 0.05
+        camera.lookAt(scene.position)
+    }
+}
 
 
 
