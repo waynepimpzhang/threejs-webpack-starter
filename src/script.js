@@ -29,15 +29,15 @@ function startLoader() {
     }
     updateCounter();
 }
-startLoader() 
-gsap.to('.counter',0.25, {
+startLoader()
+gsap.to('.counter', 0.25, {
     delay: 3.5,
     opacity: 0,
 })
 
 gsap.to('.bar', 1.5, {
     delay: 3.5,
-    width: 0,
+    height: 0,
     stagger: 0.1,
     ease: 'power4.inOut',
 })
@@ -49,7 +49,6 @@ const loader = new GLTFLoader();
 const dracoLoader = new DRACOLoader()
 dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/')
 dracoLoader.setDecoderConfig({ type: 'js' })
-
 loader.setDRACOLoader(dracoLoader)
 
 // Scroll Trigger
@@ -67,13 +66,15 @@ let star = null
 const axesHelper = new THREE.AxesHelper(5);
 let isScroll = false
 const wrapper = document.querySelector('.wrapper')
+const mediaQuery = window.matchMedia('(max-width: 768px)')
+const border = document.querySelector('.border')
 // Objects
 loader.load('umbrella.glb', (gltf) => {
 
     star = gltf.scene
     scene.add(star)
     //mediaMatch
-    const mediaQuery = window.matchMedia('(max-width: 768px)')
+
     mediaQuery.addListener(handleMediaQueryChange)
     handleMediaQueryChange(mediaQuery)
 
@@ -104,6 +105,9 @@ loader.load('umbrella.glb', (gltf) => {
 
     //roughness
     star.children[0].material.roughness = .5;
+    //metalness
+    star.children[0].material.metalness = 0;
+
 
     // const starFolder = gui.addFolder('Star')
     // starFolder.add(star.position, 'x').min(-5).max(5).step(0.1).name('position.x')
@@ -116,7 +120,12 @@ loader.load('umbrella.glb', (gltf) => {
 
 
     const tl = gsap.timeline({
-
+        defaults: {
+            duration: 2,
+            onComplete: () => {
+                console.log('complete')
+            }
+        },
         scrollTrigger: {
             trigger: wrapper,
             start: 'top top',
@@ -125,16 +134,11 @@ loader.load('umbrella.glb', (gltf) => {
             pin: true,
             toggleActions: 'play none none reverse',
             onEnter: () => {
-
                 isScroll = true
-                console.log(isScroll)
-
             },
             onLeaveBack: () => {
-
                 isScroll = false
-                console.log(isScroll)
-
+            
             },
             // markers: true,
         }
@@ -151,6 +155,9 @@ loader.load('umbrella.glb', (gltf) => {
         x: 1.2,
         y: 1.2,
         z: 1.2
+    }, '<')
+    tl.to('.border', {
+        border: '0'
     }, '<')
 })
 
@@ -263,3 +270,19 @@ function raf(time) {
     requestAnimationFrame(raf)
 }
 requestAnimationFrame(raf)
+
+
+//mouse move effect camera position x and y
+const mouse = { x: 0, y: 0 }
+window.addEventListener('mousemove', (event) => {
+    mouse.x = -(event.clientX / window.innerWidth) * 2 + 1
+    mouse.y = (event.clientY / window.innerHeight) * 2 - 1
+    camera.position.x += (mouse.x - camera.position.x) * 0.05
+    camera.position.y += (mouse.y - camera.position.y) * 0.05
+    camera.lookAt(scene.position)
+})  
+
+
+
+
+
