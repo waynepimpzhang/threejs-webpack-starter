@@ -87,10 +87,20 @@ loader.load('umbrella.glb', (gltf) => {
             //mobile        
             star.position.set(0, -1.4, 0)
             star.scale.set(.5, .5, .5)
+            gsap.to('.border', {
+                border: '3vw solid rgb(255, 255, 255)',
+                duration: 1,
+                ease: 'power2.Out'
+            })
         } else {
             //desktop
             star.position.set(0, -1.9, 0)
             star.scale.set(.8, .8, .8)
+            gsap.to('.border', {
+                border: '8vw solid rgb(255, 255, 255)',
+                duration: 1,
+                ease: 'power2.Out'
+            })
         }
         // console.log(event.matches)
         // console.log(star.position.x, star.position.y, star.position.z, star.scale.x, star.scale.y, star.scale.z)
@@ -166,19 +176,35 @@ const tl2 = gsap.timeline({
         trigger: '.black',
         start: 'top center',
         end: 'bottom top',
-        toggleActions: 'play none none reverse',
+        toggleActions: 'play reverse play reverse',
         // markers: true,
     }
 
 })
-const boxs = gsap.utils.toArray('.box')
-boxs.forEach((box) => {
-    tl2.from(box, {
-        y: 50,
-        opacity: 0,
-    })
-})
+// const boxs = gsap.utils.toArray('.box')
+// boxs.forEach((box) => {
+//     tl2.from(box, {
+//         y: 50,
+//         opacity: 0,
+//     })
+// })
+const boxh1 = new SplitType('.box h1')
+const boxp = new SplitType('.box p')
+// console.log(boxh1, boxp)
 // text animation
+
+tl2.from(boxh1.lines, {
+    duration: 1,
+    opacity: 0,
+    y: 10,
+    stagger: 0.1,
+})
+tl2.from(boxp.lines, {
+    duration: 1,
+    opacity: 0,
+    y: 10,
+    stagger: 0.1,
+})
 
 function gsapComplete() {
     if (star) {
