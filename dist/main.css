@@ -42,7 +42,7 @@ h2 {
 }
 
 .black h1,
-p {
+.black p {
     z-index: 99999;
     font-size: 1.2rem;
     color: rgb(255, 255, 255);
@@ -65,12 +65,7 @@ p {
     margin-top: 1em;
 }
 
-@media (max-width: 768px) {
-    .black {
-        max-width: 80%;
-        grid-template-columns: 1fr;
-    }
-}
+
 
 /* //proloader */
 
@@ -107,11 +102,22 @@ p {
 .border {
     position: fixed;
     overflow: hidden;
-    border: 6em solid rgb(255, 255, 255);
+    border: 4vw solid rgb(255, 255, 255);
     width: 100vw;
     height: 100vh;
     z-index: 1;
     pointer-events: none;
+    transition: border 1s;
+}
+
+@media (max-width: 768px) {
+    .black {
+        max-width: 80%;
+        grid-template-columns: 1fr;
+    }
+    .border {
+        border: 2vw solid rgb(255, 255, 255);
+    }
 }
 
 /*# sourceMappingURL=main.css.map*/
