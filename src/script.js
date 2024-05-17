@@ -23,20 +23,22 @@ function startLoader() {
             currentValue = 100;
         }
         counterElement.textContent = currentValue;
-        let delay = Math.floor(Math.random() * 200) + 50;
+        let delay = Math.floor(Math.random() * 100);
 
         setTimeout(updateCounter, delay);
     }
     updateCounter();
 }
 startLoader()
+// onComplete
 gsap.to('.counter', 0.25, {
-    delay: 3.5,
+    delay: 1.5,
     opacity: 0,
+    onComplete: gsapComplete
 })
 
 gsap.to('.bar', 1.5, {
-    delay: 3.5,
+    delay: 1.5,
     height: 0,
     stagger: 0.1,
     ease: 'power4.inOut',
@@ -68,46 +70,33 @@ let isScroll = false
 const wrapper = document.querySelector('.wrapper')
 const mediaQuery = window.matchMedia('(max-width: 768px)')
 const border = document.querySelector('.border')
+const h1Text = new SplitType('.wrapper h1')
+const h2Text = new SplitType('.wrapper h2')
+
 // Objects
 loader.load('umbrella.glb', (gltf) => {
 
     star = gltf.scene
     scene.add(star)
     //mediaMatch
-
     mediaQuery.addListener(handleMediaQueryChange)
     handleMediaQueryChange(mediaQuery)
-
 
     function handleMediaQueryChange(event) {
         if (event.matches) {
             //mobile        
-            if (isScroll) {
-                star.position.set(0, -0.7, 0)
-                star.scale.set(1.2, 1.2, 1.2)
-            } else {
-                star.position.set(0, -1.4, -1)
-                star.scale.set(.5, .5, .5)
-            }
-
+            star.position.set(0, -1.4, 0)
+            star.scale.set(.5, .5, .5)
         } else {
             //desktop
-            if (isScroll) {
-                star.position.set(0, -0.7, 0)
-                star.scale.set(1.2, 1.2, 1.2)
-            } else {
-                star.position.set(0, -1.9, -1)
-                star.scale.set(.8, .8, .8)
-            }
-
+            star.position.set(0, -1.9, 0)
+            star.scale.set(.8, .8, .8)
         }
     }
-
     //roughness
     star.children[0].material.roughness = .5;
     //metalness
     star.children[0].material.metalness = 0;
-
 
     // const starFolder = gui.addFolder('Star')
     // starFolder.add(star.position, 'x').min(-5).max(5).step(0.1).name('position.x')
@@ -118,32 +107,36 @@ loader.load('umbrella.glb', (gltf) => {
     // starFolder.add(star.rotation, 'y').min(-5).max(5).step(0.1).name('rotation.y')
     // starFolder.add(star.rotation, 'z').min(-5).max(5).step(0.1).name('rotation.z')
 
-
     const tl = gsap.timeline({
         defaults: {
-            duration: 2,
+            duration: 1,
+            ease: "sine.inOut",
             onComplete: () => {
-                console.log('complete')
+
             }
         },
         scrollTrigger: {
             trigger: wrapper,
-            start: 'top top',
-            end: 'bottom center',
-            scrub: 2,
+            start: 'top 40%',
+            end: 'bottom 80%',
             pin: true,
             toggleActions: 'play none none reverse',
-            onEnter: () => {
-                isScroll = true
-            },
-            onLeaveBack: () => {
-                isScroll = false
-            
-            },
-            // markers: true,
+            //  markers: true,
         }
     })
-    tl.to(pointLight.position, { x: 2, y: -2, z: 3 })
+    tl.to(h1Text.chars, {
+        duration: 1,
+        opacity: 0,
+        y: -100,
+        stagger: 0.1,
+    })
+    tl.to(h2Text.chars, {
+        duration: 1,
+        opacity: 0,
+        y: -100,
+        stagger: 0.1,
+    }, '<')
+    tl.to(pointLight.position, { x: 2, y: -2, z: 3 }, '-=1')
     tl.to(star.position, {
         z: 0,
         y: -.07
@@ -156,12 +149,55 @@ loader.load('umbrella.glb', (gltf) => {
         y: 1.2,
         z: 1.2
     }, '<')
+
     tl.to('.border', {
         border: '0'
     }, '<')
 })
+const tl2 = gsap.timeline({
+    defaults: {
+        ease: 'power2.Out',
+        duration: 1
+    },
+    scrollTrigger: {
+        trigger: '.black',
+        start: 'top center',
+        end: 'bottom top',
+        toggleActions: 'play none none reverse',
+        // markers: true,
+    }
 
-//text 
+})
+const boxs = gsap.utils.toArray('.box')
+boxs.forEach((box) => {
+    tl2.from(box, {
+        y: 50,
+        opacity: 0,
+    })
+})
+// text animation
+
+function gsapComplete() {
+    if (star) {
+        gsap.fromTo(star.position, { z: 10 ,duration: 2, ease: 'power2.Out'  }, { z: -1,duration: 2 , ease: 'power2.Out' })
+        gsap.from(h1Text.chars, {
+            duration: 1,
+            delay: .9,
+            opacity: 0,
+            y: 100,
+            stagger: 0.05,
+            ease: 'power2.Out',
+        })
+        gsap.from(h2Text.chars, {
+            duration: 1,
+            delay: 1,
+            opacity: 0,
+            y: 100,
+            stagger: 0.05,
+            ease: 'power2.Out',
+        })
+    }
+}
 
 
 
@@ -284,18 +320,7 @@ window.addEventListener('mousemove', (event) => {
     camera.position.x += (mouse.x - camera.position.x) * 0.05
     camera.position.y += (mouse.y - camera.position.y) * 0.05
     camera.lookAt(scene.position)
-})  
-window.addEventListener("deviceorientation", handleOrientation, true);
-
-function handleOrientation(event) {
-    if (event.beta !== null && event.gamma !== null) {
-        camera.position.x += (event.beta / 180) * 0.05
-        camera.position.y += (event.gamma / 180) * 0.05
-        camera.lookAt(scene.position)
-    }
-}
-
-
-
+    // console.log(event.clientX, event.clientY)
+})
 
 
