@@ -92,6 +92,9 @@ loader.load('umbrella.glb', (gltf) => {
             star.position.set(0, -1.9, 0)
             star.scale.set(.8, .8, .8)
         }
+        // console.log(event.matches)
+        // console.log(star.position.x, star.position.y, star.position.z, star.scale.x, star.scale.y, star.scale.z)
+        // console.log(camera.position.x, camera.position.y, camera.position.z)  
     }
     //roughness
     star.children[0].material.roughness = .5;
@@ -117,7 +120,7 @@ loader.load('umbrella.glb', (gltf) => {
         },
         scrollTrigger: {
             trigger: wrapper,
-            start: 'top 40%',
+            start: 'top 35%',
             end: 'bottom 80%',
             pin: true,
             toggleActions: 'play none none reverse',
@@ -179,7 +182,7 @@ boxs.forEach((box) => {
 
 function gsapComplete() {
     if (star) {
-        gsap.fromTo(star.position, { z: 10 ,duration: 2, ease: 'power2.Out'  }, { z: -1,duration: 2 , ease: 'power2.Out' })
+       // gsap.fromTo(star.position, { z: 10 ,duration: 2, ease: 'power2.Out'  }, { z: -1,duration: 2 , ease: 'power2.Out' })
         gsap.from(h1Text.chars, {
             duration: 1,
             delay: .9,
