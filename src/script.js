@@ -74,8 +74,8 @@ const h1Text = new SplitType('.wrapper h1')
 const h2Text = new SplitType('.wrapper h2')
 
 // Objects
-loader.load('umbrella.glb', (gltf) => {
-
+// loader.load('umbrella.glb', (gltf) => {
+loader.load('box.glb', (gltf) => {
     star = gltf.scene
     scene.add(star)
     //mediaMatch
